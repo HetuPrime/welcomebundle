@@ -2,8 +2,14 @@ node_modules/
 dist/
 .env
 data/
+output/
 *.log
 .DS_Store
 
 # Docker
 .docker/
+
+# Generated files
+output/
+capsules/
+proofs/

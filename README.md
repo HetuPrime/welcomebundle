@@ -1,53 +1,62 @@
 # 🎁 WelcomeBundle
 
-> A digital welcome bundle for your newborn — automatically register gaming and platform accounts on their birth day.
-
-## Why?
-
-When your baby is born, you want to give them something special. A set of accounts created on their exact birth date — Steam, GitHub, Epic Games, Nintendo... Each account's creation timestamp becomes a permanent record of that moment.
-
-**This is a time capsule. A digital gift. A "Welcome to the world."**
+> 当孩子还在摇篮里，你已经在为她准备数字世界的一席之地
 
 ---
 
-## 简单流程
+## ✨ 它是什么？
+
+WelcomeBundle 是一份**数字出生礼包**——在孩子出生的那一天，为她创建数字身份、封存时间胶囊、生成精美的数字出生证明。
 
 ```
-孩子出生时：
-  1. 创建专用邮箱 (如 emma2024@gmail.com)
-  2. 配置 .env
-  3. 运行注册脚本
-  4. 自动注册所有平台账号
-
-孩子长大后：
-  - 邮箱是孩子的
-  - 所有账号是孩子的
-  - 完全移交，无需额外操作
+🎂 孩子出生那天
+    ↓
+🎫 自动注册 GitHub、Steam、Reddit 等账号
+    ↓
+📜 生成数字出生证明（可打印、可分享）
+    ↓
+💌 封存父母的信和视频（18年后解锁）
+    ↓
+🎉 一份陪伴孩子一生的数字礼物
 ```
 
 ---
 
-## Quick Start
+## 🎬 使用场景
 
-### Step 1: 创建孩子的专用邮箱
+> **场景一**
+> 
+> 孩子出生的那天，你运行 WelcomeBundle。
+> 它为她注册了第一个 GitHub 账号、第一个 Steam 账号...
+> 同时生成了一张精美的"数字出生证明"。
+> 
+> 你把证明打印出来，和出生证一起放进相册。
+
+> **场景二**
+> 
+> 你写了一封信给孩子，录了一段视频，
+> 封存在时间胶囊里。
+> 
+> 18年后，她收到邮件提醒，打开时间胶囊，
+> 看到你在 18 年前为她准备的一切。
+
+---
+
+## 🚀 快速开始
+
+### Step 1: 创建孩子的邮箱
 
 ```
 推荐 Gmail：
   邮箱名：孩子的名字 + 出生年份
-  例如：emma2024@gmail.com, lucas2025@gmail.com
-  
-为什么用 Gmail：
-  - 大多数平台接受 Gmail
-  - 可以创建 App Password 用于自动化
-  - 孩子长大后直接使用
+  例如：emma2024@gmail.com
 ```
 
 ### Step 2: 获取 Gmail App Password
 
-1. 登录孩子的 Gmail
-2. 访问 https://myaccount.google.com/apppasswords
-3. 选择"邮件"应用 → "其他(WelcomeBundle)"
-4. 复制生成的 16 位密码
+1. 访问 https://myaccount.google.com/apppasswords
+2. 选择"邮件" → "其他(WelcomeBundle)"
+3. 复制生成的 16 位密码
 
 ### Step 3: 配置
 
@@ -56,168 +65,166 @@ When your baby is born, you want to give them something special. A set of accoun
 git clone https://github.com/HetuPrime/welcomebundle.git
 cd welcomebundle
 
-# 复制配置
+# 配置
 cp .env.example .env
 nano .env
 ```
 
 ```bash
-# .env 配置
-
-# 孩子的信息
+# .env
 BABY_NAME=Emma
 LAST_NAME=Smith
+PARENT_EMAIL=emma2024@gmail.com
 
-# 孩子的专用邮箱
-PARENT_EMAIL=emma2024@gmail.com      # ← 用孩子的邮箱
-
-# Gmail IMAP 配置（自动验证邮件）
 EMAIL_PROVIDER=gmail
-EMAIL_USER=emma2024@gmail.com        # ← 孩子的邮箱
-EMAIL_PASSWORD=abcd efgh ijkl mnop   # ← App Password
+EMAIL_USER=emma2024@gmail.com
+EMAIL_PASSWORD=abcd efgh ijkl mnop
 
-# 要注册的平台
-ENABLED_PLATFORMS=github,steam,reddit,epic_games
-
-# 加密密钥
-ENCRYPTION_KEY=  # 运行: openssl rand -base64 32
+ENABLED_PLATFORMS=github,steam,reddit
 ```
 
-### Step 4: 测试
+### Step 4: 运行
 
 ```bash
-# 安装依赖
 npm install
-
-# 测试模式（不会实际注册）
-DRY_RUN=true npm run register
-
-# 实际注册
 npm run register
 ```
 
 ---
 
-## 平台选择
+## 🎁 它能做什么？
+
+| 功能 | 说明 |
+|------|------|
+| 🎫 **数字身份** | 为孩子注册 GitHub、Steam、Reddit 等账号 |
+| 📜 **出生证明** | 生成精美的数字出生证明（PNG/PDF） |
+| 💌 **时间胶囊** | 封存父母的信，18年后解锁 |
+| 📅 **成长时间线** | 每年发送提醒邮件 |
+| 🌍 **数字足迹** | 记录当天的天气、新闻、热歌 |
+
+---
+
+## 📜 数字出生证明
+
+注册完成后，自动生成一张精美的证明：
+
+```
+┌────────────────────────────────────┐
+│                                    │
+│     🎂 Emma 的数字出生证明          │
+│                                    │
+│     注册时间: 2024-03-29 21:06:42  │
+│                                    │
+│     ━━━━━ 数字身份 ━━━━━           │
+│                                    │
+│     ✓ GitHub    @emma             │
+│     ✓ Steam     emma_gaming       │
+│     ✓ Reddit    u/emma            │
+│                                    │
+│     ━━━━━ 数字足迹 ━━━━━           │
+│                                    │
+│     ☀️ 天气: 晴 18°C               │
+│     📰 新闻: [当日头条]            │
+│     🎵 热歌: [Spotify Top 1]       │
+│                                    │
+│     created with ❤️               │
+│     welcomebundle.dev              │
+│                                    │
+└────────────────────────────────────┘
+```
+
+---
+
+## 📱 Telegram Bot
+
+远程触发，医院里也能用：
+
+```
+👋 欢迎来到 WelcomeBundle！
+
+请告诉我宝宝的名字: Emma
+
+🎉 Emma！多美的名字！
+正在为 Emma 准备数字出生礼包...
+
+━━━━━━━━━━━━━━━━━━━━
+🎫 创建数字身份...
+━━━━━━━━━━━━━━━━━━━━
+
+✨ GitHub
+   ✓ 用户名: @emma
+   ✓ 注册时间: 2024-03-29 21:06
+   🎊 Emma 的第一个开发者身份！
+
+🎮 Steam  
+   ✓ 用户名: emma_gaming
+   🎊 游戏之旅从这里开始！
+
+━━━━━━━━━━━━━━━━━━━━
+🎁 Emma 的数字出生礼包完成！
+
+📊 查看出生证明: /proof
+📤 分享给朋友: /share
+💌 封存更多内容: /capsule
+━━━━━━━━━━━━━━━━━━━━
+```
+
+---
+
+## 🎮 支持的平台
+
+| 平台 | 类型 | 用户名格式 |
+|------|------|-----------|
+| GitHub | 开发者 | `{babyname}` |
+| GitLab | 开发者 | `{babyname}` |
+| Steam | 游戏 | `{babyname}_gaming` |
+| Epic Games | 游戏 | `{babyname}` |
+| Battle.net | 游戏 | `{babyname}` |
+| Nintendo | 游戏 | `{babyname}` |
+| Reddit | 社区 | `{babyname}` |
+| Medium | 博客 | `{babyname}` |
+
+---
+
+## 🐳 Docker 部署
 
 ```bash
-# 指定要注册的平台
-ENABLED_PLATFORMS=github,reddit,steam,epic_games
-
-# 或排除某些平台
-DISABLED_PLATFORMS=battlenet,nintendo
+./deploy.sh   # 启动
+./logs.sh     # 查看日志
+./stop.sh     # 停止
 ```
-
-| Platform | Type | Username |
-|----------|------|----------|
-| `github` | Developer | `{babyname}` |
-| `gitlab` | Developer | `{babyname}` |
-| `steam` | Gaming | `{babyname}_gaming` |
-| `epic_games` | Gaming | `{babyname}` |
-| `battlenet` | Gaming | `{babyname}` |
-| `nintendo` | Gaming | `{babyname}` |
-| `reddit` | Community | `{babyname}` |
-| `medium` | Blog | `{babyname}` |
-
-**默认**: `github`, `steam`, `epic_games`
 
 ---
 
-## Docker 部署（长期运行）
+## ⚠️ 重要提醒
+
+- **使用孩子的邮箱注册**，方便日后移交
+- **使用 Gmail App Password**，不要用主密码
+- **妥善保管加密密钥**，丢失无法恢复时间胶囊
+- **检查平台服务条款**，确保合规使用
+
+---
+
+## 🛠️ 开发
 
 ```bash
-# 配置
-cp .env.example .env
-nano .env
-
-# 启动
-./deploy.sh
-
-# 查看日志
-./logs.sh
-
-# 停止
-./stop.sh
-```
-
-### Telegram Bot（远程触发）
-
-```bash
-# .env 添加
-TELEGRAM_BOT_TOKEN=your-token
-TELEGRAM_CHAT_ID=your-chat-id
-
-# 启动 Bot
-npm run bot
-
-# 医院里发送 /register 触发注册
+npm install           # 安装依赖
+npm test              # 运行测试
+npm run register      # 运行注册
 ```
 
 ---
 
-## 完整流程图
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  孩子出生前（准备）                                       │
-│  ├─ 创建孩子的专用邮箱 (emma2024@gmail.com)               │
-│  ├─ 获取 Gmail App Password                             │
-│  ├─ 配置 .env                                           │
-│  └─ 测试: DRY_RUN=true                                  │
-├─────────────────────────────────────────────────────────┤
-│  孩子出生时 🎉                                           │
-│  ├─ 发送 /register 到 Telegram Bot                      │
-│  │   或                                                 │
-│  ├─ 运行 npm run register                               │
-│  └─ 系统自动执行:                                        │
-│      • 打开浏览器                                        │
-│      • 用孩子的邮箱注册各平台                             │
-│      • 自动读取验证邮件                                  │
-│      • 自动点击验证链接                                  │
-│      • 保存账号信息                                      │
-├─────────────────────────────────────────────────────────┤
-│  结果                                                    │
-│  ├─ 所有账号创建时间 = 孩子生日                          │
-│  ├─ 所有账号邮箱 = 孩子的邮箱                            │
-│  └─ 孩子长大后，邮箱+账号全部属于ta                       │
-└─────────────────────────────────────────────────────────┘
-```
-
----
-
-## 安全
-
-- ✅ 所有凭证加密存储
-- ✅ 仅白名单 Chat ID 可触发 Bot
-- ✅ 无硬编码密钥
-- ✅ `.env` 排除在 git 之外
-- ⚠️ 使用 App Password，不要用 Gmail 主密码
-
----
-
-## FAQ
-
-**Q: 用孩子的邮箱注册，会不会有问题？**
-A: 不会。大多数平台只要求邮箱验证，不限制年龄。账号由家长代管，孩子长大后移交。
-
-**Q: 孩子长大后怎么接管账号？**
-A: 直接把邮箱密码给孩子即可。所有账号都是用这个邮箱注册的，孩子可以自己管理。
-
-**Q: Gmail App Password 是什么？**
-A: 是一个 16 位密码，用于第三方应用访问 Gmail。不是你的 Gmail 登录密码。在 Google 账户设置中创建。
-
-**Q: 可以用其他邮箱吗？**
-A: 可以。Outlook、Yahoo 都支持 IMAP。配置方法类似。
-
-**Q: 临时邮箱能用吗？**
-A: 不推荐。临时邮箱会失效，无法找回密码。请用孩子的真实邮箱。
-
----
-
-## License
+## 📄 许可证
 
 MIT License
 
 ---
 
-Made with ❤️ for parents.
+<div align="center">
+
+Made with ❤️ for parents
+
+**让每一个新生命，都有一份数字世界的欢迎礼**
+
+</div>
