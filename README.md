@@ -1,217 +1,241 @@
 # 🎁 WelcomeBundle
 
-> 当孩子还在摇篮里，你已经在为她准备数字世界的一席之地
+> 当孩子来到这个世界的那一刻，世界是什么样子？
+
+**输入孩子的出生时间，生成一张有温度的"数字出生证明"**
 
 ---
 
 ## ✨ 它是什么？
 
-WelcomeBundle 是一份**数字出生礼包**——在孩子出生的那一天，为她创建数字身份、封存时间胶囊、生成精美的数字出生证明。
+WelcomeBundle 是一个**数字出生证明生成器**——为孩子记录她来到这个世界的那一刻，世界是什么样子。
 
 ```
-🎂 孩子出生那天
-    ↓
-🎫 自动注册 GitHub、Steam、Reddit 等账号
-    ↓
-📜 生成数字出生证明（可打印、可分享）
-    ↓
-💌 封存父母的信和视频（18年后解锁）
-    ↓
-🎉 一份陪伴孩子一生的数字礼物
+┌────────────────────────────────────────┐
+│                                        │
+│  🎂 Emma                               │
+│  ──────────────────────                │
+│  数字世界的第一天                      │
+│                                        │
+│  2024.03.29  14:30                     │
+│  ♈ 白羊座  🐲 龙年  📍北京            │
+│                                        │
+│  ──────────────────────                │
+│  ☀️ 这一天的天气                       │
+│  晴  18°C  微风                        │
+│                                        │
+│  ──────────────────────                │
+│  📰 这一天，世界在发生                 │
+│  • [正向新闻1]                         │
+│  • [正向新闻2]                         │
+│                                        │
+│  ──────────────────────                │
+│  📜 历史上的今天                       │
+│  • 1973年 越战结束                     │
+│                                        │
+│  ──────────────────────                │
+│  👤 同日出生的名人                      │
+│  • Elvis Presley (1935)                │
+│                                        │
+│  ──────────────────────                │
+│  🎵 那一天，世界在听                   │
+│  Flowers - Miley Cyrus                 │
+│                                        │
+│           welcomebundle.dev            │
+│                                        │
+└────────────────────────────────────────┘
 ```
 
 ---
 
-## 🎬 使用场景
+## 🎯 核心价值
 
-> **场景一**
-> 
-> 孩子出生的那天，你运行 WelcomeBundle。
-> 它为她注册了第一个 GitHub 账号、第一个 Steam 账号...
-> 同时生成了一张精美的"数字出生证明"。
-> 
-> 你把证明打印出来，和出生证一起放进相册。
-
-> **场景二**
-> 
-> 你写了一封信给孩子，录了一段视频，
-> 封存在时间胶囊里。
-> 
-> 18年后，她收到邮件提醒，打开时间胶囊，
-> 看到你在 18 年前为她准备的一切。
+| 维度 | 说明 |
+|------|------|
+| 情感价值 | 记录孩子来到这个世界的那一刻 |
+| 纪念意义 | 可打印、可分享、可保存 |
+| 社交货币 | 精美的卡片适合分享 |
+| 仪式感 | 父母为孩子准备的第一份数字礼物 |
 
 ---
 
 ## 🚀 快速开始
 
-### Step 1: 创建孩子的邮箱
-
-```
-推荐 Gmail：
-  邮箱名：孩子的名字 + 出生年份
-  例如：emma2024@gmail.com
-```
-
-### Step 2: 获取 Gmail App Password
-
-1. 访问 https://myaccount.google.com/apppasswords
-2. 选择"邮件" → "其他(WelcomeBundle)"
-3. 复制生成的 16 位密码
-
-### Step 3: 配置
+### 安装
 
 ```bash
-# 克隆项目
 git clone https://github.com/HetuPrime/welcomebundle.git
 cd welcomebundle
-
-# 配置
-cp .env.example .env
-nano .env
+npm install
 ```
+
+### 生成证明
+
+```bash
+# 基础用法
+npm run proof -- --name=Emma --date=2024-03-29
+
+# 完整用法
+npm run proof -- \
+  --name=Emma \
+  --date=2024-03-29 \
+  --time=14:30 \
+  --location="北京" \
+  --message="愿你在数字世界里，自由生长"
+```
+
+### 配置 API Keys（可选）
 
 ```bash
 # .env
-BABY_NAME=Emma
-LAST_NAME=Smith
-PARENT_EMAIL=emma2024@gmail.com
-
-EMAIL_PROVIDER=gmail
-EMAIL_USER=emma2024@gmail.com
-EMAIL_PASSWORD=abcd efgh ijkl mnop
-
-ENABLED_PLATFORMS=github,steam,reddit
+OPENWEATHER_API_KEY=xxx      # 天气数据
+NEWS_API_KEY=xxx             # 新闻数据
+SPOTIFY_ACCESS_TOKEN=xxx     # 热歌数据
 ```
 
-### Step 4: 运行
-
-```bash
-npm install
-npm run register
-```
+不配置 API Keys 也能用，会使用默认数据。
 
 ---
 
-## 🎁 它能做什么？
+## 📊 卡片包含什么？
 
-| 功能 | 说明 |
+| 区块 | 数据 | 说明 |
+|------|------|------|
+| 基本信息 | 名字、日期、时间、地点 | 用户输入 |
+| 星座生肖 | 根据日期计算 | 自动生成 |
+| 天气 | 出生当日天气 | OpenWeatherMap |
+| 新闻 | 3条正向新闻 | NewsAPI + 过滤 |
+| 历史事件 | 2-3条历史事件 | Wikipedia |
+| 同日名人 | 2-3位名人 | Wikipedia |
+| 热歌 | 1首热门歌曲 | Spotify/Billboard |
+| 父母寄语 | 自定义文字 | 用户输入 |
+
+---
+
+## 🎨 卡片风格
+
+提供多种风格：
+
+| 风格 | 特点 | 适合 |
+|------|------|------|
+| 简约现代 | 干净、留白多 | 喜欢简洁的父母 |
+| 复古证书 | 边框、装饰纹 | 喜欢仪式感、打印保存 |
+| 插画可爱 | 手绘风格、柔和色彩 | 年轻父母、女孩宝宝 |
+| 暗色高级 | 深色背景、金色点缀 | 喜欢高级感 |
+
+---
+
+## 📱 输出格式
+
+| 格式 | 用途 |
 |------|------|
-| 🎫 **数字身份** | 为孩子注册 GitHub、Steam、Reddit 等账号 |
-| 📜 **出生证明** | 生成精美的数字出生证明（PNG/PDF） |
-| 💌 **时间胶囊** | 封存父母的信，18年后解锁 |
-| 📅 **成长时间线** | 每年发送提醒邮件 |
-| 🌍 **数字足迹** | 记录当天的天气、新闻、热歌 |
+| PNG | 社交分享（推荐） |
+| PDF | 打印保存 |
+| HTML | 可交互版本 |
 
 ---
 
-## 📜 数字出生证明
+## ⚙️ API 集成
 
-注册完成后，自动生成一张精美的证明：
+### 天气数据
 
-```
-┌────────────────────────────────────┐
-│                                    │
-│     🎂 Emma 的数字出生证明          │
-│                                    │
-│     注册时间: 2024-03-29 21:06:42  │
-│                                    │
-│     ━━━━━ 数字身份 ━━━━━           │
-│                                    │
-│     ✓ GitHub    @emma             │
-│     ✓ Steam     emma_gaming       │
-│     ✓ Reddit    u/emma            │
-│                                    │
-│     ━━━━━ 数字足迹 ━━━━━           │
-│                                    │
-│     ☀️ 天气: 晴 18°C               │
-│     📰 新闻: [当日头条]            │
-│     🎵 热歌: [Spotify Top 1]       │
-│                                    │
-│     created with ❤️               │
-│     welcomebundle.dev              │
-│                                    │
-└────────────────────────────────────┘
+```javascript
+// OpenWeatherMap History API
+const weather = await getWeather('北京', '2024-03-29');
+// { condition: '晴', temp: 18, wind: '微风' }
 ```
 
----
+### 新闻数据
 
-## 📱 Telegram Bot
-
-远程触发，医院里也能用：
-
+```javascript
+// NewsAPI + 正向过滤
+const news = await getNews('2024-03-29');
+// [{ title: '...', source: '...' }, ...]
 ```
-👋 欢迎来到 WelcomeBundle！
 
-请告诉我宝宝的名字: Emma
+### 历史事件
 
-🎉 Emma！多美的名字！
-正在为 Emma 准备数字出生礼包...
+```javascript
+// Wikipedia On This Day
+const history = await getHistory('03-29');
+// [{ year: 1973, text: '越战结束' }, ...]
+```
 
-━━━━━━━━━━━━━━━━━━━━
-🎫 创建数字身份...
-━━━━━━━━━━━━━━━━━━━━
+### 热门歌曲
 
-✨ GitHub
-   ✓ 用户名: @emma
-   ✓ 注册时间: 2024-03-29 21:06
-   🎊 Emma 的第一个开发者身份！
-
-🎮 Steam  
-   ✓ 用户名: emma_gaming
-   🎊 游戏之旅从这里开始！
-
-━━━━━━━━━━━━━━━━━━━━
-🎁 Emma 的数字出生礼包完成！
-
-📊 查看出生证明: /proof
-📤 分享给朋友: /share
-💌 封存更多内容: /capsule
-━━━━━━━━━━━━━━━━━━━━
+```javascript
+// Spotify Top 50
+const song = await getTopSong('2024-03-29');
+// { title: 'Flowers', artist: 'Miley Cyrus' }
 ```
 
 ---
 
-## 🎮 支持的平台
-
-| 平台 | 类型 | 用户名格式 |
-|------|------|-----------|
-| GitHub | 开发者 | `{babyname}` |
-| GitLab | 开发者 | `{babyname}` |
-| Steam | 游戏 | `{babyname}_gaming` |
-| Epic Games | 游戏 | `{babyname}` |
-| Battle.net | 游戏 | `{babyname}` |
-| Nintendo | 游戏 | `{babyname}` |
-| Reddit | 社区 | `{babyname}` |
-| Medium | 博客 | `{babyname}` |
-
----
-
-## 🐳 Docker 部署
+## 🔧 命令行工具
 
 ```bash
-./deploy.sh   # 启动
-./logs.sh     # 查看日志
-./stop.sh     # 停止
+# 生成数字出生证明
+npm run proof -- --name=Emma --date=2024-03-29
+
+# 指定输出格式
+npm run proof -- --name=Emma --date=2024-03-29 --format=pdf
+
+# 选择风格
+npm run proof -- --name=Emma --date=2024-03-29 --style=vintage
+
+# 完整参数
+npm run proof -- \
+  --name=Emma \              # 宝宝名字
+  --date=2024-03-29 \        # 出生日期
+  --time=14:30 \             # 出生时间
+  --location=北京 \          # 出生地点
+  --message="愿你的世界充满爱" \  # 父母寄语
+  --style=modern \           # 卡片风格
+  --format=png               # 输出格式
 ```
 
 ---
 
-## ⚠️ 重要提醒
+## 🛠️ 技术栈
 
-- **使用孩子的邮箱注册**，方便日后移交
-- **使用 Gmail App Password**，不要用主密码
-- **妥善保管加密密钥**，丢失无法恢复时间胶囊
-- **检查平台服务条款**，确保合规使用
+- **语言**: TypeScript
+- **运行时**: Node.js
+- **渲染**: Canvas / html2canvas
+- **APIs**: OpenWeatherMap, NewsAPI, Wikipedia, Spotify
+- **成本**: $0（使用免费 API）
 
 ---
 
-## 🛠️ 开发
+## 📁 项目结构
 
-```bash
-npm install           # 安装依赖
-npm test              # 运行测试
-npm run register      # 运行注册
 ```
+welcomebundle/
+├── src/
+│   ├── core/
+│   │   ├── proof.ts          # 出生证明生成
+│   │   ├── api/
+│   │   │   ├── weather.ts    # 天气 API
+│   │   │   ├── news.ts       # 新闻 API
+│   │   │   ├── history.ts    # 历史事件 API
+│   │   │   └── music.ts      # 热歌 API
+│   │   └── utils/
+│   │       ├── zodiac.ts     # 星座生肖
+│   │       └── filter.ts     # 新闻过滤
+│   ├── cli-proof.ts          # CLI 工具
+│   └── index.ts              # 入口
+├── output/
+│   └── proofs/               # 生成的证明
+└── README.md
+```
+
+---
+
+## ⚠️ 重要说明
+
+- 所有数据仅在本地处理
+- 不存储用户输入的信息
+- 不需要注册/登录
+- API Keys 仅用于获取公开数据
 
 ---
 
@@ -225,6 +249,6 @@ MIT License
 
 Made with ❤️ for parents
 
-**让每一个新生命，都有一份数字世界的欢迎礼**
+**让每一个新生命，都有一份独特的数字纪念**
 
 </div>
