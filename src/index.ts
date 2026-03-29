@@ -9,6 +9,7 @@ async function main() {
   const babyName = process.env.BABY_NAME;
   const parentEmail = process.env.PARENT_EMAIL;
   const encryptionKey = process.env.ENCRYPTION_KEY;
+  const dryRun = process.env.DRY_RUN === 'true';
 
   if (!babyName || !parentEmail) {
     console.error('❌ 请设置环境变量:');
@@ -35,6 +36,16 @@ async function main() {
   enabledPlatforms.forEach(p => {
     console.log(`   • ${p.name}: ${p.username}`);
   });
+
+  if (dryRun) {
+    console.log('\n⚠️  DRY RUN 模式 - 不会实际注册账号\n');
+    console.log('✅ 配置检查通过！以下是将执行的操作:');
+    enabledPlatforms.forEach(p => {
+      console.log(`   • [模拟] 注册 ${p.name} - 用户名: ${p.username}, 邮箱: ${p.email}`);
+    });
+    console.log('\n要实际执行注册，请设置 DRY_RUN=false 或删除该环境变量');
+    return;
+  }
   
   console.log('\n🚀 开始注册...\n');
   
