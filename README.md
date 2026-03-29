@@ -2,120 +2,114 @@
 
 > A digital welcome bundle for your newborn — automatically register gaming and platform accounts on their birth day.
 
-## ⚠️ 重要：邮箱验证方式选择
+## Why?
 
-### 临时邮箱 - 仅用于测试
+When your baby is born, you want to give them something special. A set of accounts created on their exact birth date — Steam, GitHub, Epic Games, Nintendo... Each account's creation timestamp becomes a permanent record of that moment.
 
-```
-❌ 不适合正式使用！原因：
-   - 邮箱几小时后失效
-   - 无法找回密码
-   - 无法接收二次验证邮件
-   - 无法修改密码
-   - 部分平台拒绝临时邮箱
+**This is a time capsule. A digital gift. A "Welcome to the world."**
 
-✅ 仅用于：测试流程是否正常
-```
+---
 
-### 真实邮箱 (IMAP) - 推荐正式使用
+## 简单流程
 
 ```
-✅ 推荐方式：
-   方案 A: 用父母的邮箱注册（最简单）
-          - 所有验证邮件发到父母邮箱
-          - 父母可以管理、修改密码
-          - 孩子长大后移交账号
-   
-   方案 B: 为孩子创建专用邮箱
-          - 创建 childname2024@gmail.com
-          - 设置自动转发到父母邮箱
-          - 孩子长大后移交邮箱和账号
+孩子出生时：
+  1. 创建专用邮箱 (如 emma2024@gmail.com)
+  2. 配置 .env
+  3. 运行注册脚本
+  4. 自动注册所有平台账号
+
+孩子长大后：
+  - 邮箱是孩子的
+  - 所有账号是孩子的
+  - 完全移交，无需额外操作
 ```
 
 ---
 
 ## Quick Start
 
-### Step 1: 配置邮箱（推荐）
+### Step 1: 创建孩子的专用邮箱
 
-**Gmail 配置**（需要 App Password）：
+```
+推荐 Gmail：
+  邮箱名：孩子的名字 + 出生年份
+  例如：emma2024@gmail.com, lucas2025@gmail.com
+  
+为什么用 Gmail：
+  - 大多数平台接受 Gmail
+  - 可以创建 App Password 用于自动化
+  - 孩子长大后直接使用
+```
 
-1. 访问 https://myaccount.google.com/apppasswords
-2. 选择"邮件"应用 → "其他(WelcomeBundle)"
-3. 复制生成的 16 位密码
+### Step 2: 获取 Gmail App Password
+
+1. 登录孩子的 Gmail
+2. 访问 https://myaccount.google.com/apppasswords
+3. 选择"邮件"应用 → "其他(WelcomeBundle)"
+4. 复制生成的 16 位密码
+
+### Step 3: 配置
 
 ```bash
-# .env
+# 克隆项目
+git clone https://github.com/HetuPrime/welcomebundle.git
+cd welcomebundle
+
+# 复制配置
+cp .env.example .env
+nano .env
+```
+
+```bash
+# .env 配置
+
+# 孩子的信息
+BABY_NAME=Emma
+LAST_NAME=Smith
+
+# 孩子的专用邮箱
+PARENT_EMAIL=emma2024@gmail.com      # ← 用孩子的邮箱
+
+# Gmail IMAP 配置（自动验证邮件）
 EMAIL_PROVIDER=gmail
-EMAIL_USER=parent@gmail.com
-EMAIL_PASSWORD=abcd efgh ijkl mnop  # App Password
-PARENT_EMAIL=parent@gmail.com
+EMAIL_USER=emma2024@gmail.com        # ← 孩子的邮箱
+EMAIL_PASSWORD=abcd efgh ijkl mnop   # ← App Password
+
+# 要注册的平台
+ENABLED_PLATFORMS=github,steam,reddit,epic_games
+
+# 加密密钥
+ENCRYPTION_KEY=  # 运行: openssl rand -base64 32
 ```
 
-### Step 2: 选择平台
+### Step 4: 测试
 
 ```bash
-# .env
-ENABLED_PLATFORMS=github,steam,reddit
-
-# 可选平台: github, gitlab, steam, epic_games, 
-#           battlenet, nintendo, reddit, medium
-```
-
-### Step 3: 运行
-
-```bash
+# 安装依赖
 npm install
+
+# 测试模式（不会实际注册）
+DRY_RUN=true npm run register
+
+# 实际注册
 npm run register
 ```
 
 ---
 
-## 完整流程图
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  孩子出生前                                              │
-│  ├─ 创建 Gmail App Password                             │
-│  ├─ 配置 .env                                           │
-│  └─ 测试: DRY_RUN=true                                  │
-├─────────────────────────────────────────────────────────┤
-│  孩子出生时 🎉                                           │
-│  ├─ 发送 /register 到 Telegram Bot                      │
-│  │   或                                                 │
-│  ├─ 运行 npm run register                               │
-│  └─ 系统自动执行:                                        │
-│      • 打开浏览器                                        │
-│      • 填写注册表单                                      │
-│      • 用你的邮箱注册                                    │
-│      • 自动读取验证邮件                                  │
-│      • 自动点击验证链接                                  │
-│      • 保存账号信息                                      │
-├─────────────────────────────────────────────────────────┤
-│  结果                                                    │
-│  ├─ 账号创建时间 = 孩子生日                              │
-│  ├─ 验证邮件发到你的邮箱                                  │
-│  └─ 你可以随时管理这些账号                                │
-└─────────────────────────────────────────────────────────┘
-```
-
----
-
-## Platform Selection
-
-Choose which platforms to register:
+## 平台选择
 
 ```bash
-# Enable specific platforms
+# 指定要注册的平台
 ENABLED_PLATFORMS=github,reddit,steam,epic_games
 
-# Or disable specific platforms
+# 或排除某些平台
 DISABLED_PLATFORMS=battlenet,nintendo
 ```
 
-**Available Platforms**:
-| Platform | Type | Username Style |
-|----------|------|----------------|
+| Platform | Type | Username |
+|----------|------|----------|
 | `github` | Developer | `{babyname}` |
 | `gitlab` | Developer | `{babyname}` |
 | `steam` | Gaming | `{babyname}_gaming` |
@@ -125,94 +119,105 @@ DISABLED_PLATFORMS=battlenet,nintendo
 | `reddit` | Community | `{babyname}` |
 | `medium` | Blog | `{babyname}` |
 
----
-
-## Telegram Bot Setup
-
-1. Open Telegram, find **@BotFather**
-2. Send `/newbot` and follow instructions
-3. Get your **Bot Token**
-4. Send any message to your new bot
-5. Visit: `https://api.telegram.org/bot<TOKEN>/getUpdates`
-6. Find `"chat":{"id":123456789}` — that's your **Chat ID**
+**默认**: `github`, `steam`, `epic_games`
 
 ---
 
-## Configuration
-
-Edit `.env`:
+## Docker 部署（长期运行）
 
 ```bash
-# Run Mode
-DRY_RUN=true   # Simulation mode
-# DRY_RUN=false  # Actual registration
+# 配置
+cp .env.example .env
+nano .env
 
-# Baby Information
-BABY_NAME=Emma
-LAST_NAME=Smith
+# 启动
+./deploy.sh
 
-# Parent Email (用于接收验证邮件)
-PARENT_EMAIL=parent@gmail.com
+# 查看日志
+./logs.sh
 
-# Email Verification (推荐使用真实邮箱)
-EMAIL_PROVIDER=gmail
-EMAIL_USER=parent@gmail.com
-EMAIL_PASSWORD=your-app-password  # Gmail App Password
+# 停止
+./stop.sh
+```
 
-# Platform Selection
-ENABLED_PLATFORMS=github,steam,reddit
+### Telegram Bot（远程触发）
 
-# Security
-ENCRYPTION_KEY=  # Run: openssl rand -base64 32
+```bash
+# .env 添加
+TELEGRAM_BOT_TOKEN=your-token
+TELEGRAM_CHAT_ID=your-chat-id
 
-# Telegram Bot
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
+# 启动 Bot
+npm run bot
+
+# 医院里发送 /register 触发注册
 ```
 
 ---
 
-## Docker Deployment
+## 完整流程图
 
-```bash
-./deploy.sh   # Build and start
-./logs.sh     # View logs
-./stop.sh     # Stop service
+```
+┌─────────────────────────────────────────────────────────┐
+│  孩子出生前（准备）                                       │
+│  ├─ 创建孩子的专用邮箱 (emma2024@gmail.com)               │
+│  ├─ 获取 Gmail App Password                             │
+│  ├─ 配置 .env                                           │
+│  └─ 测试: DRY_RUN=true                                  │
+├─────────────────────────────────────────────────────────┤
+│  孩子出生时 🎉                                           │
+│  ├─ 发送 /register 到 Telegram Bot                      │
+│  │   或                                                 │
+│  ├─ 运行 npm run register                               │
+│  └─ 系统自动执行:                                        │
+│      • 打开浏览器                                        │
+│      • 用孩子的邮箱注册各平台                             │
+│      • 自动读取验证邮件                                  │
+│      • 自动点击验证链接                                  │
+│      • 保存账号信息                                      │
+├─────────────────────────────────────────────────────────┤
+│  结果                                                    │
+│  ├─ 所有账号创建时间 = 孩子生日                          │
+│  ├─ 所有账号邮箱 = 孩子的邮箱                            │
+│  └─ 孩子长大后，邮箱+账号全部属于ta                       │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Security
+## 安全
 
-- ✅ All credentials are encrypted at rest
-- ✅ Only whitelisted chat ID can trigger the bot
-- ✅ No hardcoded secrets in code
-- ✅ `.env` is excluded from git
-- ⚠️ **Use App Passwords for Gmail, never your main password**
-- ⚠️ **Never use temporary email for permanent accounts**
+- ✅ 所有凭证加密存储
+- ✅ 仅白名单 Chat ID 可触发 Bot
+- ✅ 无硬编码密钥
+- ✅ `.env` 排除在 git 之外
+- ⚠️ 使用 App Password，不要用 Gmail 主密码
 
 ---
 
 ## FAQ
 
-**Q: 为什么不用临时邮箱？**
-A: 临时邮箱会失效，无法找回密码、无法接收验证邮件。正式使用必须用真实邮箱。
+**Q: 用孩子的邮箱注册，会不会有问题？**
+A: 不会。大多数平台只要求邮箱验证，不限制年龄。账号由家长代管，孩子长大后移交。
 
-**Q: 用谁的邮箱注册？**
-A: 建议用父母邮箱。孩子长大后，父母可以把账号移交给孩子。
+**Q: 孩子长大后怎么接管账号？**
+A: 直接把邮箱密码给孩子即可。所有账号都是用这个邮箱注册的，孩子可以自己管理。
 
-**Q: Gmail 需要什么配置？**
-A: 需要 App Password（不是 Gmail 密码）。在 Google 账户设置中创建。
+**Q: Gmail App Password 是什么？**
+A: 是一个 16 位密码，用于第三方应用访问 Gmail。不是你的 Gmail 登录密码。在 Google 账户设置中创建。
 
-**Q: 可以注册哪些平台？**
-A: GitHub, GitLab, Steam, Epic Games, Battle.net, Nintendo, Reddit, Medium。更多平台正在添加。
+**Q: 可以用其他邮箱吗？**
+A: 可以。Outlook、Yahoo 都支持 IMAP。配置方法类似。
+
+**Q: 临时邮箱能用吗？**
+A: 不推荐。临时邮箱会失效，无法找回密码。请用孩子的真实邮箱。
 
 ---
 
 ## License
 
-MIT License - Use responsibly and with love.
+MIT License
 
 ---
 
-Made with ❤️ for parents who want to give their children a unique digital legacy.
+Made with ❤️ for parents.
