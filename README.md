@@ -2,92 +2,104 @@
 
 > A digital welcome bundle for your newborn — automatically register gaming and platform accounts on their birth day.
 
-## Why?
+## ⚠️ 重要：邮箱验证方式选择
 
-When your baby is born, you want to give them something special. A set of accounts created on their exact birth date — Steam, GitHub, Epic Games, Nintendo... Each account's creation timestamp becomes a permanent record of that moment.
+### 临时邮箱 - 仅用于测试
 
-**This is a time capsule. A digital gift. A "Welcome to the world."**
+```
+❌ 不适合正式使用！原因：
+   - 邮箱几小时后失效
+   - 无法找回密码
+   - 无法接收二次验证邮件
+   - 无法修改密码
+   - 部分平台拒绝临时邮箱
 
-## Features
+✅ 仅用于：测试流程是否正常
+```
 
-- 🎮 **8 Supported Platforms**: GitHub, GitLab, Steam, Epic Games, Battle.net, Nintendo, Reddit, Medium
-- ✅ **Free Platform Selection**: Choose which platforms to register
-- 🤖 **Telegram Bot**: Trigger registration from anywhere with a message
-- 📧 **Auto Email Verification**: Automatic email verification via IMAP or temp email
-- 🐳 **Docker Ready**: Deploy once, run forever
-- ⏰ **Remote Trigger**: Start registration from your phone at the hospital
-- 🔐 **Secure Storage**: Encrypted storage for credentials
-- ✅ **Well Tested**: 50+ unit tests, all passing
+### 真实邮箱 (IMAP) - 推荐正式使用
+
+```
+✅ 推荐方式：
+   方案 A: 用父母的邮箱注册（最简单）
+          - 所有验证邮件发到父母邮箱
+          - 父母可以管理、修改密码
+          - 孩子长大后移交账号
+   
+   方案 B: 为孩子创建专用邮箱
+          - 创建 childname2024@gmail.com
+          - 设置自动转发到父母邮箱
+          - 孩子长大后移交邮箱和账号
+```
+
+---
 
 ## Quick Start
 
-### Method 1: Docker (Recommended for Production)
+### Step 1: 配置邮箱（推荐）
+
+**Gmail 配置**（需要 App Password）：
+
+1. 访问 https://myaccount.google.com/apppasswords
+2. 选择"邮件"应用 → "其他(WelcomeBundle)"
+3. 复制生成的 16 位密码
 
 ```bash
-# Clone
-git clone https://github.com/HetuPrime/welcomebundle.git
-cd welcomebundle
-
-# Configure
-cp .env.example .env
-nano .env  # Fill in your values
-
-# Deploy
-chmod +x deploy.sh
-./deploy.sh
-
-# View logs
-./logs.sh
+# .env
+EMAIL_PROVIDER=gmail
+EMAIL_USER=parent@gmail.com
+EMAIL_PASSWORD=abcd efgh ijkl mnop  # App Password
+PARENT_EMAIL=parent@gmail.com
 ```
 
-### Method 2: Local Test (Recommended for Testing)
+### Step 2: 选择平台
 
 ```bash
-# Clone
-git clone https://github.com/HetuPrime/welcomebundle.git
-cd welcomebundle
+# .env
+ENABLED_PLATFORMS=github,steam,reddit
 
-# Configure for testing
-cp .env.example .env
-# Edit .env and set DRY_RUN=true
+# 可选平台: github, gitlab, steam, epic_games, 
+#           battlenet, nintendo, reddit, medium
+```
 
-# Install and test
+### Step 3: 运行
+
+```bash
 npm install
-npm test
-
-# Dry run (simulation, no actual registration)
 npm run register
 ```
 
-## Email Verification Automation
+---
 
-### Method 1: Temporary Email (Default)
+## 完整流程图
 
-No configuration needed. The system automatically creates temporary email addresses for verification.
-
-**Pros**: Zero setup
-**Cons**: Some platforms may not accept temporary emails
-
-### Method 2: IMAP Email (Recommended)
-
-Connect your real email account to automatically receive verification emails.
-
-**Gmail Setup**:
-1. Go to https://myaccount.google.com/apppasswords
-2. Create an App Password for "Mail" → "WelcomeBundle"
-3. Add to `.env`:
-   ```bash
-   EMAIL_PROVIDER=gmail
-   EMAIL_USER=yourname@gmail.com
-   EMAIL_PASSWORD=abcd efgh ijkl mnop  # Your App Password
-   ```
-
-**Outlook Setup**:
-```bash
-EMAIL_PROVIDER=outlook
-EMAIL_USER=yourname@outlook.com
-EMAIL_PASSWORD=your-password
 ```
+┌─────────────────────────────────────────────────────────┐
+│  孩子出生前                                              │
+│  ├─ 创建 Gmail App Password                             │
+│  ├─ 配置 .env                                           │
+│  └─ 测试: DRY_RUN=true                                  │
+├─────────────────────────────────────────────────────────┤
+│  孩子出生时 🎉                                           │
+│  ├─ 发送 /register 到 Telegram Bot                      │
+│  │   或                                                 │
+│  ├─ 运行 npm run register                               │
+│  └─ 系统自动执行:                                        │
+│      • 打开浏览器                                        │
+│      • 填写注册表单                                      │
+│      • 用你的邮箱注册                                    │
+│      • 自动读取验证邮件                                  │
+│      • 自动点击验证链接                                  │
+│      • 保存账号信息                                      │
+├─────────────────────────────────────────────────────────┤
+│  结果                                                    │
+│  ├─ 账号创建时间 = 孩子生日                              │
+│  ├─ 验证邮件发到你的邮箱                                  │
+│  └─ 你可以随时管理这些账号                                │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
 
 ## Platform Selection
 
@@ -113,7 +125,7 @@ DISABLED_PLATFORMS=battlenet,nintendo
 | `reddit` | Community | `{babyname}` |
 | `medium` | Blog | `{babyname}` |
 
-**Default**: `github`, `steam`, `epic_games`
+---
 
 ## Telegram Bot Setup
 
@@ -123,20 +135,8 @@ DISABLED_PLATFORMS=battlenet,nintendo
 4. Send any message to your new bot
 5. Visit: `https://api.telegram.org/bot<TOKEN>/getUpdates`
 6. Find `"chat":{"id":123456789}` — that's your **Chat ID**
-7. Add to `.env`:
-   ```
-   TELEGRAM_BOT_TOKEN=your-token
-   TELEGRAM_CHAT_ID=your-chat-id
-   ```
 
-## Bot Commands
-
-| Command | Description |
-|---------|-------------|
-| `/start` | Show configured platforms |
-| `/register` | Start account registration |
-| `/status` | Check current status |
-| `/help` | Show help message |
+---
 
 ## Configuration
 
@@ -151,16 +151,16 @@ DRY_RUN=true   # Simulation mode
 BABY_NAME=Emma
 LAST_NAME=Smith
 
-# Parent Email
-PARENT_EMAIL=your@email.com
+# Parent Email (用于接收验证邮件)
+PARENT_EMAIL=parent@gmail.com
+
+# Email Verification (推荐使用真实邮箱)
+EMAIL_PROVIDER=gmail
+EMAIL_USER=parent@gmail.com
+EMAIL_PASSWORD=your-app-password  # Gmail App Password
 
 # Platform Selection
 ENABLED_PLATFORMS=github,steam,reddit
-
-# Email Verification (Method 2)
-EMAIL_PROVIDER=gmail
-EMAIL_USER=yourname@gmail.com
-EMAIL_PASSWORD=your-app-password
 
 # Security
 ENCRYPTION_KEY=  # Run: openssl rand -base64 32
@@ -170,7 +170,9 @@ TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 ```
 
-## Docker Commands
+---
+
+## Docker Deployment
 
 ```bash
 ./deploy.sh   # Build and start
@@ -178,14 +180,7 @@ TELEGRAM_CHAT_ID=
 ./stop.sh     # Stop service
 ```
 
-## Development
-
-```bash
-npm install           # Install dependencies
-npm test              # Run tests
-npm run test:coverage # Run tests with coverage
-npm run register      # Run registration (DRY_RUN mode)
-```
+---
 
 ## Security
 
@@ -193,14 +188,26 @@ npm run register      # Run registration (DRY_RUN mode)
 - ✅ Only whitelisted chat ID can trigger the bot
 - ✅ No hardcoded secrets in code
 - ✅ `.env` is excluded from git
-- ⚠️ Use App Passwords for Gmail, never your main password
+- ⚠️ **Use App Passwords for Gmail, never your main password**
+- ⚠️ **Never use temporary email for permanent accounts**
 
-## Disclaimer
+---
 
-- This tool is for personal use only
-- Creating accounts with your own identity is legal
-- Check each platform's Terms of Service before use
-- The authors are not responsible for any account suspensions
+## FAQ
+
+**Q: 为什么不用临时邮箱？**
+A: 临时邮箱会失效，无法找回密码、无法接收验证邮件。正式使用必须用真实邮箱。
+
+**Q: 用谁的邮箱注册？**
+A: 建议用父母邮箱。孩子长大后，父母可以把账号移交给孩子。
+
+**Q: Gmail 需要什么配置？**
+A: 需要 App Password（不是 Gmail 密码）。在 Google 账户设置中创建。
+
+**Q: 可以注册哪些平台？**
+A: GitHub, GitLab, Steam, Epic Games, Battle.net, Nintendo, Reddit, Medium。更多平台正在添加。
+
+---
 
 ## License
 
