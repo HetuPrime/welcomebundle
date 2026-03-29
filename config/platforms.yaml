@@ -1,0 +1,59 @@
+platforms:
+  # Developer Platforms
+  - name: github
+    enabled: true
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+    
+  - name: gitlab
+    enabled: true
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+
+  # Gaming Platforms
+  - name: steam
+    enabled: true
+    username: ${BABY_NAME}_gaming
+    email: ${PARENT_EMAIL}
+    
+  - name: epic_games
+    enabled: true
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+    dob: ${BABY_DOB}
+    additionalFields:
+      firstName: Baby
+      lastName: ${LAST_NAME}
+    
+  - name: battlenet
+    enabled: false  # May trigger captcha
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+    
+  - name: nintendo
+    enabled: false  # Coming soon
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+
+  # Community Platforms
+  - name: reddit
+    enabled: true
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+    
+  - name: medium
+    enabled: false  # Coming soon
+    username: ${BABY_NAME}
+    email: ${PARENT_EMAIL}
+
+# Notifications (optional)
+notification:
+  telegram:
+    enabled: false
+    botToken: ${TELEGRAM_BOT_TOKEN}
+    chatId: ${TELEGRAM_CHAT_ID}
+
+# Webhook trigger (optional)
+webhook:
+  enabled: false
+  secret: ${WEBHOOK_SECRET}
