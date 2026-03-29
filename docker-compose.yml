@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  welcomebundle:
+    build: .
+    container_name: welcomebundle
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - BABY_NAME=${BABY_NAME}
+      - BABY_EXPECTED_DATE=${BABY_EXPECTED_DATE}
+      - BABY_DOB=${BABY_DOB}
+      - PARENT_EMAIL=${PARENT_EMAIL}
+      - LAST_NAME=${LAST_NAME}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - USE_TEMP_EMAIL=${USE_TEMP_EMAIL:-false}
+    volumes:
+      # Persist encrypted credentials
+      - ./data:/app/data
+      # Custom config (optional)
+      - ./config:/app/config:ro
+    # For headless Chrome
+    cap_add:
+      - SYS_ADMIN
+    # Needed for Chromium in Docker
+    security_opt:
+      - seccomp=unconfined
+    # Optional: expose webhook port
+    # ports:
+    #   - "${WEBHOOK_PORT:-3000}:3000"
+
+  # Optional: Watchtower for auto-updates
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=86400  # Check daily
+    command: welcomebundle

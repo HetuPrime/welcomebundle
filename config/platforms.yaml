@@ -1,5 +1,7 @@
 platforms:
-  # Developer Platforms
+  # ============================================
+  # 开发者平台
+  # ============================================
   - name: github
     enabled: true
     username: ${BABY_NAME}
@@ -10,7 +12,9 @@ platforms:
     username: ${BABY_NAME}
     email: ${PARENT_EMAIL}
 
-  # Gaming Platforms
+  # ============================================
+  # 游戏平台
+  # ============================================
   - name: steam
     enabled: true
     username: ${BABY_NAME}_gaming
@@ -26,34 +30,46 @@ platforms:
       lastName: ${LAST_NAME}
     
   - name: battlenet
-    enabled: false  # May trigger captcha
+    enabled: true
     username: ${BABY_NAME}
     email: ${PARENT_EMAIL}
+    dob: ${BABY_DOB}
+    additionalFields:
+      firstName: Baby
+      lastName: ${LAST_NAME}
     
   - name: nintendo
-    enabled: false  # Coming soon
+    enabled: false  # 需要邮箱验证
     username: ${BABY_NAME}
     email: ${PARENT_EMAIL}
+    dob: ${BABY_DOB}
 
-  # Community Platforms
+  # ============================================
+  # 社区平台
+  # ============================================
   - name: reddit
     enabled: true
     username: ${BABY_NAME}
     email: ${PARENT_EMAIL}
     
   - name: medium
-    enabled: false  # Coming soon
+    enabled: true
     username: ${BABY_NAME}
     email: ${PARENT_EMAIL}
 
-# Notifications (optional)
+# ============================================
+# 通知配置
+# ============================================
 notification:
   telegram:
-    enabled: false
+    enabled: true
     botToken: ${TELEGRAM_BOT_TOKEN}
     chatId: ${TELEGRAM_CHAT_ID}
 
-# Webhook trigger (optional)
+# ============================================
+# Webhook 配置
+# ============================================
 webhook:
   enabled: false
   secret: ${WEBHOOK_SECRET}
+  port: ${WEBHOOK_PORT:-3000}

@@ -1,6 +1,6 @@
 {
   "name": "welcomebundle",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "🎁 A digital welcome bundle for your newborn - automatically register gaming and platform accounts on their birth day",
   "main": "dist/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "start": "ts-node src/index.ts",
     "register": "ts-node src/index.ts",
     "bot": "ts-node src/bot.ts",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "echo \"No tests yet\" && exit 0",
+    "deploy": "chmod +x deploy.sh && ./deploy.sh"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,8 @@
     "steam",
     "github",
     "automation",
-    "telegram"
+    "telegram",
+    "docker"
   ],
   "author": "HetuPrime",
   "license": "MIT",

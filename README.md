@@ -10,17 +10,35 @@ When your baby is born, you want to give them something special. A set of accoun
 
 ## Features
 
-- 🎮 **Gaming Platforms**: Steam, Epic Games, Battle.net, Nintendo, PlayStation, Xbox
-- 💻 **Dev Platforms**: GitHub, GitLab
-- 🌐 **Community**: Reddit, Medium, Discord
+- 🎮 **8 Supported Platforms**: GitHub, GitLab, Steam, Epic Games, Battle.net, Nintendo, Reddit, Medium
 - 🤖 **Telegram Bot**: Trigger registration from anywhere with a message
+- 📧 **Temp Email**: Automatic verification code handling
+- 🐳 **Docker Ready**: Deploy once, run forever
 - ⏰ **Remote Trigger**: Start registration from your phone at the hospital
-- 📋 **Pre-configuration**: Fill in account info beforehand, one-click execution
 - 🔐 **Secure Storage**: Encrypted storage for credentials
 
 ## Quick Start
 
-### Method 1: Local Command Line
+### Method 1: Docker (Recommended)
+
+```bash
+# Clone
+git clone https://github.com/HetuPrime/welcomebundle.git
+cd welcomebundle
+
+# Configure
+cp .env.example .env
+nano .env  # Fill in your values
+
+# Deploy
+chmod +x deploy.sh
+./deploy.sh
+
+# View logs
+./logs.sh
+```
+
+### Method 2: Local
 
 ```bash
 # Clone
@@ -33,42 +51,29 @@ npx playwright install chromium
 
 # Configure
 cp .env.example .env
-# Edit .env with your preferences
+nano .env
 
-# Run when baby is born
-npm run register
+# Run
+npm run bot    # Telegram bot mode
+# or
+npm run register  # One-time run
 ```
 
-### Method 2: Telegram Bot (Recommended)
+## Telegram Bot Setup
 
-Perfect for triggering from your phone at the hospital!
+1. Open Telegram, find **@BotFather**
+2. Send `/newbot` and follow instructions
+3. Get your **Bot Token**
+4. Send any message to your new bot
+5. Visit: `https://api.telegram.org/bot<TOKEN>/getUpdates`
+6. Find `"chat":{"id":123456789}` — that's your **Chat ID**
+7. Fill in `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=your-token
+   TELEGRAM_CHAT_ID=your-chat-id
+   ```
 
-```bash
-# 1. Create a Telegram Bot
-# - Open Telegram, find @BotFather
-# - Send /newbot and follow instructions
-# - Get your Bot Token
-
-# 2. Get your Chat ID
-# - Send any message to your new bot
-# - Visit: https://api.telegram.org/bot<TOKEN>/getUpdates
-# - Find "chat":{"id":123456789} - that's your Chat ID
-
-# 3. Configure
-cp .env.example .env
-# Edit .env and fill in:
-# - TELEGRAM_BOT_TOKEN=your-bot-token
-# - TELEGRAM_CHAT_ID=your-chat-id
-# - BABY_NAME=Emma
-# - PARENT_EMAIL=your@email.com
-
-# 4. Start the bot
-npm run bot
-```
-
-Now at the hospital, just send `/register` to your bot!
-
-## Telegram Bot Commands
+## Bot Commands
 
 | Command | Description |
 |---------|-------------|
@@ -82,15 +87,15 @@ Now at the hospital, just send `/register` to your bot!
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Before Birth (During Pregnancy)                        │
-│  ├─ Clone and install the project                       │
-│  ├─ Configure baby name and parent email                │
-│  ├─ Set up Telegram bot (optional)                      │
-│  └─ Test with dry-run                                   │
+│  ├─ Clone and configure the project                     │
+│  ├─ Set up Telegram bot                                 │
+│  ├─ Deploy to server (Docker)                           │
+│  └─ Bot waits for /register command                     │
 ├─────────────────────────────────────────────────────────┤
 │  On Birth Day 🎉                                         │
-│  ├─ Option A: Run `npm run register` on computer        │
-│  ├─ Option B: Send `/register` to Telegram bot          │
-│  └─ Bot opens browser and starts registration           │
+│  ├─ Open Telegram on your phone                         │
+│  ├─ Send /register to your bot                          │
+│  └─ Bot runs on your server                             │
 ├─────────────────────────────────────────────────────────┤
 │  Result                                                  │
 │  ├─ Accounts created with birth timestamp              │
@@ -99,63 +104,65 @@ Now at the hospital, just send `/register` to your bot!
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Platform Support
+## Supported Platforms
 
-### ✅ Fully Supported (Email Only)
-
-| Platform | Status | Notes |
-|----------|--------|-------|
-| GitHub | ✅ | Dev platform, email verification |
-| GitLab | ✅ | Dev platform |
-| Epic Games | ✅ | Gaming, email + DOB |
-| Steam | ✅ | Gaming, email verification |
-| Reddit | ✅ | Community, email optional |
-| Medium | ✅ | Blogging |
-
-### ⚠️ Requires Attention
-
-| Platform | Status | Notes |
-|----------|--------|-------|
-| Battle.net | ⚠️ | May trigger captcha |
-| Nintendo | ⚠️ | Email verification |
-| PlayStation | ⚠️ | Email verification |
-| Discord | ⚠️ | May require phone |
-| Xbox/Microsoft | ⚠️ | May require phone |
-
-### ❌ Not Supported
-
-| Platform | Reason |
-|----------|--------|
-| 微信/微博 | Real-name verification required |
-| Telegram | Phone verification required |
-| Twitter/X | High risk of ban |
+| Platform | Status | Verification | Notes |
+|----------|--------|--------------|-------|
+| GitHub | ✅ | Email | Dev platform |
+| GitLab | ✅ | Email | Dev platform |
+| Steam | ✅ | Email | Gaming |
+| Epic Games | ✅ | Email | Gaming |
+| Battle.net | ✅ | Email | Gaming (may trigger captcha) |
+| Nintendo | ✅ | Email | Gaming |
+| Reddit | ✅ | Optional | Community |
+| Medium | ✅ | Magic Link | Blogging |
 
 ## Configuration
 
-Edit `.env` file:
+Edit `.env`:
 
 ```bash
 # Baby Information
 BABY_NAME=Emma
-BABY_EXPECTED_DATE=2024-06-01
-
-# Parent Contact
-PARENT_EMAIL=your@email.com
 LAST_NAME=Smith
 
-# Security (required)
+# Parent Email (for verification links)
+PARENT_EMAIL=your@email.com
+
+# Security
 ENCRYPTION_KEY=  # Run: openssl rand -base64 32
 
-# Telegram Bot (optional)
-TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+# Telegram Bot
+TELEGRAM_BOT_TOKEN=123456789:ABC...
 TELEGRAM_CHAT_ID=123456789
+
+# Optional: Use temp email for auto-verification
+USE_TEMP_EMAIL=false
+```
+
+## Docker Commands
+
+```bash
+# Deploy
+./deploy.sh
+
+# View logs
+./logs.sh
+
+# Stop
+./stop.sh
+
+# Or use docker-compose directly
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
 ```
 
 ## Security
 
 - ✅ All credentials are encrypted at rest
-- ✅ No plain-text passwords in config
-- ✅ Only you can access your bot (chat ID whitelist)
+- ✅ Only whitelisted chat ID can trigger the bot
+- ✅ Docker container runs with minimal privileges
 - ⚠️ Recommended: Use a dedicated email for verification
 
 ## Disclaimer
