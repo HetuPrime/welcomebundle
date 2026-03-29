@@ -11,11 +11,13 @@ When your baby is born, you want to give them something special. A set of accoun
 ## Features
 
 - 🎮 **8 Supported Platforms**: GitHub, GitLab, Steam, Epic Games, Battle.net, Nintendo, Reddit, Medium
+- ✅ **Free Platform Selection**: Choose which platforms to register
 - 🤖 **Telegram Bot**: Trigger registration from anywhere with a message
 - 📧 **Temp Email**: Automatic verification code handling
 - 🐳 **Docker Ready**: Deploy once, run forever
 - ⏰ **Remote Trigger**: Start registration from your phone at the hospital
 - 🔐 **Secure Storage**: Encrypted storage for credentials
+- ✅ **Well Tested**: 40+ unit tests, all passing
 
 ## Quick Start
 
@@ -58,6 +60,43 @@ npm run bot    # Telegram bot mode
 # or
 npm run register  # One-time run
 ```
+
+## Platform Selection
+
+You can freely choose which platforms to register:
+
+### Method 1: Enable Specific Platforms
+
+```bash
+# .env
+ENABLED_PLATFORMS=github,reddit,steam,epic_games
+```
+
+### Method 2: Disable Specific Platforms
+
+```bash
+# .env
+DISABLED_PLATFORMS=battlenet,nintendo
+```
+
+### Available Platforms
+
+| Platform | Type | Username Style |
+|----------|------|----------------|
+| `github` | Developer | `{babyname}` |
+| `gitlab` | Developer | `{babyname}` |
+| `steam` | Gaming | `{babyname}_gaming` |
+| `epic_games` | Gaming | `{babyname}` |
+| `battlenet` | Gaming | `{babyname}` |
+| `nintendo` | Gaming | `{babyname}` |
+| `reddit` | Community | `{babyname}` |
+| `medium` | Blog | `{babyname}` |
+
+**Default**: `github`, `steam`, `epic_games`
+
+### Priority
+
+If both `ENABLED_PLATFORMS` and `DISABLED_PLATFORMS` are set, `ENABLED_PLATFORMS` takes priority.
 
 ## Telegram Bot Setup
 
@@ -104,19 +143,6 @@ npm run register  # One-time run
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Supported Platforms
-
-| Platform | Status | Verification | Notes |
-|----------|--------|--------------|-------|
-| GitHub | ✅ | Email | Dev platform |
-| GitLab | ✅ | Email | Dev platform |
-| Steam | ✅ | Email | Gaming |
-| Epic Games | ✅ | Email | Gaming |
-| Battle.net | ✅ | Email | Gaming (may trigger captcha) |
-| Nintendo | ✅ | Email | Gaming |
-| Reddit | ✅ | Optional | Community |
-| Medium | ✅ | Magic Link | Blogging |
-
 ## Configuration
 
 Edit `.env`:
@@ -128,6 +154,11 @@ LAST_NAME=Smith
 
 # Parent Email (for verification links)
 PARENT_EMAIL=your@email.com
+
+# Platform Selection
+ENABLED_PLATFORMS=github,steam,reddit,epic_games
+# or
+# DISABLED_PLATFORMS=battlenet,nintendo
 
 # Security
 ENCRYPTION_KEY=  # Run: openssl rand -base64 32
@@ -156,6 +187,22 @@ USE_TEMP_EMAIL=false
 docker-compose up -d
 docker-compose logs -f
 docker-compose down
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Build
+npm run build
 ```
 
 ## Security

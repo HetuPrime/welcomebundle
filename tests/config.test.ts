@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { loadConfigFromEnv, replaceEnvVars } from '../src/core/config';
+import { loadConfigFromEnv, replaceEnvVars, getAllPlatforms } from '../src/core/config';
 
 // Mock environment variables
 const originalEnv = process.env;
@@ -8,6 +8,9 @@ describe('Config', () => {
   beforeEach(() => {
     jest.resetModules();
     process.env = { ...originalEnv };
+    // Set required env vars
+    process.env.BABY_NAME = 'Emma';
+    process.env.PARENT_EMAIL = 'test@example.com';
   });
 
   afterAll(() => {
@@ -30,15 +33,11 @@ describe('Config', () => {
     });
 
     it('should load config with default platforms', () => {
-      process.env.BABY_NAME = 'Emma';
-      process.env.PARENT_EMAIL = 'test@example.com';
-      
       const config = loadConfigFromEnv();
       
       expect(config.platforms).toBeDefined();
-      expect(config.platforms.length).toBeGreaterThan(0);
+      expect(config.platforms.length).toBe(3); // Default: github, steam, epic_games
       
-      // Check default platforms
       const platformNames = config.platforms.map((p: any) => p.name);
       expect(platformNames).toContain('github');
       expect(platformNames).toContain('steam');
@@ -47,7 +46,6 @@ describe('Config', () => {
 
     it('should generate usernames from BABY_NAME', () => {
       process.env.BABY_NAME = 'Emma Smith';
-      process.env.PARENT_EMAIL = 'test@example.com';
       
       const config = loadConfigFromEnv();
       
@@ -59,14 +57,102 @@ describe('Config', () => {
     });
 
     it('should enable all platforms by default', () => {
-      process.env.BABY_NAME = 'Emma';
-      process.env.PARENT_EMAIL = 'test@example.com';
-      
       const config = loadConfigFromEnv();
       
       config.platforms.forEach((platform: any) => {
         expect(platform.enabled).toBe(true);
       });
+    });
+
+    it('should respect ENABLED_PLATFORMS env var', () => {
+      process.env.ENABLED_PLATFORMS = 'github,reddit,medium';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms.length).toBe(3);
+      const platformNames = config.platforms.map((p: any) => p.name);
+      expect(platformNames).toContain('github');
+      expect(platformNames).toContain('reddit');
+      expect(platformNames).toContain('medium');
+    });
+
+    it('should respect DISABLED_PLATFORMS env var', () => {
+      process.env.DISABLED_PLATFORMS = 'steam,epic_games';
+      
+      const config = loadConfigFromEnv();
+      
+      // All platforms (8) minus disabled (2) = 6
+      expect(config.platforms.length).toBe(6);
+      const platformNames = config.platforms.map((p: any) => p.name);
+      expect(platformNames).not.toContain('steam');
+      expect(platformNames).not.toContain('epic_games');
+      expect(platformNames).toContain('github');
+      expect(platformNames).toContain('gitlab');
+      expect(platformNames).toContain('reddit');
+    });
+
+    it('should give ENABLED_PLATFORMS priority over DISABLED_PLATFORMS', () => {
+      process.env.ENABLED_PLATFORMS = 'github,reddit';
+      process.env.DISABLED_PLATFORMS = 'github'; // This should be ignored
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms.length).toBe(2);
+      const platformNames = config.platforms.map((p: any) => p.name);
+      expect(platformNames).toContain('github'); // Still enabled
+      expect(platformNames).toContain('reddit');
+    });
+
+    it('should handle ENABLED_PLATFORMS with spaces', () => {
+      process.env.ENABLED_PLATFORMS = 'github, reddit , medium ';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms.length).toBe(3);
+    });
+
+    it('should ignore unknown platforms in ENABLED_PLATFORMS', () => {
+      process.env.ENABLED_PLATFORMS = 'github,unknown_platform,steam';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms.length).toBe(2);
+      const platformNames = config.platforms.map((p: any) => p.name);
+      expect(platformNames).toContain('github');
+      expect(platformNames).toContain('steam');
+    });
+
+    it('should throw error when no platforms are enabled', () => {
+      process.env.ENABLED_PLATFORMS = 'unknown_platform';
+      
+      expect(() => loadConfigFromEnv()).toThrow('No platforms enabled');
+    });
+
+    it('should append _gaming to steam username', () => {
+      process.env.BABY_NAME = 'Emma';
+      process.env.ENABLED_PLATFORMS = 'steam';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms[0].username).toBe('emma_gaming');
+    });
+
+    it('should add LAST_NAME to additionalFields if set', () => {
+      process.env.LAST_NAME = 'Smith';
+      process.env.ENABLED_PLATFORMS = 'epic_games';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms[0].additionalFields?.lastName).toBe('Smith');
+    });
+
+    it('should add BABY_DOB if set', () => {
+      process.env.BABY_DOB = '2024-06-01';
+      process.env.ENABLED_PLATFORMS = 'epic_games';
+      
+      const config = loadConfigFromEnv();
+      
+      expect(config.platforms[0].dob).toBe('2024-06-01');
     });
   });
 
@@ -119,6 +205,22 @@ describe('Config', () => {
       expect(result[0]).toBe('test');
       expect(result[1]).toBe('static');
       expect(result[2]).toBe('test-suffix');
+    });
+  });
+
+  describe('getAllPlatforms', () => {
+    it('should return all supported platforms', () => {
+      const platforms = getAllPlatforms();
+      
+      expect(platforms).toContain('github');
+      expect(platforms).toContain('gitlab');
+      expect(platforms).toContain('steam');
+      expect(platforms).toContain('epic_games');
+      expect(platforms).toContain('battlenet');
+      expect(platforms).toContain('nintendo');
+      expect(platforms).toContain('reddit');
+      expect(platforms).toContain('medium');
+      expect(platforms.length).toBe(8);
     });
   });
 });
