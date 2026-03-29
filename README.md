@@ -13,11 +13,14 @@ When your baby is born, you want to give them something special. A set of accoun
 - 🎮 **Gaming Platforms**: Steam, Epic Games, Battle.net, Nintendo, PlayStation, Xbox
 - 💻 **Dev Platforms**: GitHub, GitLab
 - 🌐 **Community**: Reddit, Medium, Discord
-- ⏰ **Trigger System**: Manual trigger or webhook when the baby is born
+- 🤖 **Telegram Bot**: Trigger registration from anywhere with a message
+- ⏰ **Remote Trigger**: Start registration from your phone at the hospital
 - 📋 **Pre-configuration**: Fill in account info beforehand, one-click execution
 - 🔐 **Secure Storage**: Encrypted storage for credentials
 
 ## Quick Start
+
+### Method 1: Local Command Line
 
 ```bash
 # Clone
@@ -32,28 +35,67 @@ npx playwright install chromium
 cp .env.example .env
 # Edit .env with your preferences
 
-# Run
+# Run when baby is born
 npm run register
 ```
+
+### Method 2: Telegram Bot (Recommended)
+
+Perfect for triggering from your phone at the hospital!
+
+```bash
+# 1. Create a Telegram Bot
+# - Open Telegram, find @BotFather
+# - Send /newbot and follow instructions
+# - Get your Bot Token
+
+# 2. Get your Chat ID
+# - Send any message to your new bot
+# - Visit: https://api.telegram.org/bot<TOKEN>/getUpdates
+# - Find "chat":{"id":123456789} - that's your Chat ID
+
+# 3. Configure
+cp .env.example .env
+# Edit .env and fill in:
+# - TELEGRAM_BOT_TOKEN=your-bot-token
+# - TELEGRAM_CHAT_ID=your-chat-id
+# - BABY_NAME=Emma
+# - PARENT_EMAIL=your@email.com
+
+# 4. Start the bot
+npm run bot
+```
+
+Now at the hospital, just send `/register` to your bot!
+
+## Telegram Bot Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Show configured platforms |
+| `/register` | Start account registration |
+| `/status` | Check current status |
+| `/help` | Show help message |
 
 ## How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  Before Birth                                           │
-│  ├─ Select platforms you want to register              │
-│  ├─ Fill in desired usernames and emails               │
-│  └─ Save configuration (encrypted)                     │
+│  Before Birth (During Pregnancy)                        │
+│  ├─ Clone and install the project                       │
+│  ├─ Configure baby name and parent email                │
+│  ├─ Set up Telegram bot (optional)                      │
+│  └─ Test with dry-run                                   │
 ├─────────────────────────────────────────────────────────┤
-│  On Birth Day                                           │
-│  ├─ Send message to trigger (Telegram/HTTP)            │
-│  ├─ Or press the "Execute" button                      │
-│  └─ Bot starts registration                            │
+│  On Birth Day 🎉                                         │
+│  ├─ Option A: Run `npm run register` on computer        │
+│  ├─ Option B: Send `/register` to Telegram bot          │
+│  └─ Bot opens browser and starts registration           │
 ├─────────────────────────────────────────────────────────┤
-│  Result                                                 │
+│  Result                                                  │
 │  ├─ Accounts created with birth timestamp              │
 │  ├─ Credentials saved to encrypted vault               │
-│  └─ Generate "Digital Birth Card"                      │
+│  └─ Telegram notification with summary                 │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -90,33 +132,31 @@ npm run register
 
 ## Configuration
 
-Edit `config/platforms.yaml`:
+Edit `.env` file:
 
-```yaml
-platforms:
-  - name: github
-    enabled: true
-    username: ${BABY_NAME}
-    email: ${PARENT_EMAIL}
-    
-  - name: steam
-    enabled: true
-    username: ${BABY_NAME}_gaming
-    email: ${PARENT_EMAIL}
-    
-  - name: epic_games
-    enabled: true
-    username: ${BABY_NAME}
-    email: ${PARENT_EMAIL}
-    dob: ${BABY_DOB}
+```bash
+# Baby Information
+BABY_NAME=Emma
+BABY_EXPECTED_DATE=2024-06-01
+
+# Parent Contact
+PARENT_EMAIL=your@email.com
+LAST_NAME=Smith
+
+# Security (required)
+ENCRYPTION_KEY=  # Run: openssl rand -base64 32
+
+# Telegram Bot (optional)
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=123456789
 ```
 
 ## Security
 
-- All credentials are encrypted at rest
-- No plain-text passwords in config
-- Temporary email services supported for verification
-- Recommended: Use a dedicated email for this purpose
+- ✅ All credentials are encrypted at rest
+- ✅ No plain-text passwords in config
+- ✅ Only you can access your bot (chat ID whitelist)
+- ⚠️ Recommended: Use a dedicated email for verification
 
 ## Disclaimer
 

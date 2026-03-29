@@ -3,36 +3,53 @@ import { WelcomeBundle } from './core/bundle';
 import { loadConfigFromEnv } from './core/config';
 
 async function main() {
-  console.log('🎁 WelcomeBundle - Digital Birth Gift for Your Baby\n');
+  console.log('🎁 WelcomeBundle - 数字诞生礼包\n');
   
-  // Show supported platforms
+  // 检查环境变量
+  const babyName = process.env.BABY_NAME;
+  const parentEmail = process.env.PARENT_EMAIL;
+  const encryptionKey = process.env.ENCRYPTION_KEY;
+
+  if (!babyName || !parentEmail) {
+    console.error('❌ 请设置环境变量:');
+    console.error('   BABY_NAME - 宝宝名字');
+    console.error('   PARENT_EMAIL - 父母邮箱');
+    process.exit(1);
+  }
+
+  if (!encryptionKey) {
+    console.error('❌ 请设置 ENCRYPTION_KEY:');
+    console.error('   运行: openssl rand -base64 32');
+    process.exit(1);
+  }
+  
+  // 显示支持的平台
   const supported = WelcomeBundle.getSupportedPlatforms();
-  console.log('📋 Supported platforms:', supported.join(', '));
+  console.log('📋 支持的平台:', supported.join(', '));
   
-  // Load config
+  // 加载配置
   const config = loadConfigFromEnv();
-  console.log(`\n📦 Will register ${config.platforms.filter(p => p.enabled).length} platforms:\n`);
-  config.platforms.filter(p => p.enabled).forEach(p => {
-    console.log(`   - ${p.name}: ${p.username}`);
+  const enabledPlatforms = config.platforms.filter(p => p.enabled);
+  
+  console.log(`\n📦 将注册 ${enabledPlatforms.length} 个平台:\n`);
+  enabledPlatforms.forEach(p => {
+    console.log(`   • ${p.name}: ${p.username}`);
   });
   
-  console.log('\n🚀 Starting registration...\n');
+  console.log('\n🚀 开始注册...\n');
   
-  // Create bundle instance
+  // 创建 bundle 实例
   const bundle = new WelcomeBundle(config);
   
   try {
     await bundle.init();
     const results = await bundle.registerAll();
     
-    // TODO: Save results to encrypted storage
-    // TODO: Send notification if configured
-    
     const successCount = results.filter(r => r.success).length;
-    console.log(`\n🎉 Completed! ${successCount}/${results.length} platforms registered.\n`);
+    console.log(`\n🎉 完成! ${successCount}/${results.length} 个平台注册成功\n`);
     
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('❌ 错误:', error);
   } finally {
     await bundle.close();
   }
