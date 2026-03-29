@@ -28,7 +28,7 @@ export function loadConfigFromEnv(): BundleConfig {
   // Default platforms
   const defaultPlatforms = [
     { name: 'github', username: babyName.toLowerCase().replace(/\s+/g, '') },
-    { name: 'steam', username: `${babyName.toLowerCase()}_gaming` },
+    { name: 'steam', username: `${babyName.toLowerCase().replace(/\s+/g, '')}_gaming` },
     { name: 'epic_games', username: babyName.toLowerCase().replace(/\s+/g, '') },
   ];
 
@@ -44,7 +44,7 @@ export function loadConfigFromEnv(): BundleConfig {
   return { platforms };
 }
 
-function replaceEnvVars(obj: any): any {
+export function replaceEnvVars(obj: any): any {
   if (typeof obj === 'string') {
     // Replace ${VAR_NAME} with process.env.VAR_NAME
     return obj.replace(/\$\{([^}]+)\}/g, (_, varName) => {

@@ -1,6 +1,6 @@
 import { chromium, Browser } from 'playwright';
-import { BundleConfig, PlatformConfig, RegistrationResult } from './types';
-import { getHandler, getSupportedPlatforms } from './platforms';
+import { BundleConfig, PlatformConfig, RegistrationResult } from '../types';
+import { getHandler, getSupportedPlatforms } from '../platforms';
 
 export class WelcomeBundle {
   private browser: Browser | null = null;
